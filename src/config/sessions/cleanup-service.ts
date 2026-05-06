@@ -16,7 +16,6 @@ import {
   resolveSessionFilePathOptions,
   resolveStorePath,
 } from "./paths.js";
-import { cloneSessionStoreRecord } from "./store-cache.js";
 import { resolveMaintenanceConfig } from "./store-maintenance-runtime.js";
 import {
   capEntryCount,
@@ -185,7 +184,7 @@ async function previewStoreCleanup(params: {
   fixMissing?: boolean;
 }) {
   const beforeStore = loadSessionStore(params.target.storePath, { skipCache: true });
-  const previewStore = cloneSessionStoreRecord(beforeStore);
+  const previewStore = structuredClone(beforeStore);
   const staleKeys = new Set<string>();
   const cappedKeys = new Set<string>();
   const missingKeys = new Set<string>();
@@ -224,7 +223,7 @@ async function previewStoreCleanup(params: {
     storePath: params.target.storePath,
     keys: cappedKeys,
   });
-  const beforeBudgetStore = cloneSessionStoreRecord(previewStore);
+  const beforeBudgetStore = structuredClone(previewStore);
   const budgetRemovedFilePaths = new Set<string>();
   const diskBudget = await enforceSessionDiskBudget({
     store: previewStore,
